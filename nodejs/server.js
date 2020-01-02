@@ -220,7 +220,7 @@ const getIDCheckResult = async (req, res) => {
 
 const startServer = async () => {
   app.post("/exchangetoken", express.json(), exchangeToken);
-  app.get("/idcheckresult", express.json(), getIDCheckResult);
+  app.get("/idcheckresult", getIDCheckResult);
 
   app.listen(port, () => console.log(`Listening on port ${port}`));
 };
