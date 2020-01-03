@@ -10,7 +10,7 @@ const CAISSON_API_SERVER = "https://api-noam.caisson.dev";
 const CAISSON_AUTH_HEADER = `Caisson ${CAISSON_SECRET_API_KEY}`;
 const USER_ID = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);return v.toString(16);})
 
-
+app.use(express.static('public'))
 app.set('view engine', 'ejs');
 
 let users = new Map();

@@ -4,90 +4,11 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Calistoga&display=swap" >
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+
     <script src="https://unpkg.com/vue"></script>
     <script src="https://api.caisson.com/v1/caisson.js"></script>
 
-    <style>
-        :root {
-            --primary-color:#007bff;
-        }
-
-        /* 
-        :root {
-            --primary-color: rgb(104,178,148);	
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border: 0;
-        } 
-        */
-
-        body {
-            font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            font-size: 16px;
-            height: 100vh;
-            overflow: hidden;
-        }
-        
-        #app {
-            width: 100vw;
-            height: 100vh;
-            max-width: 500px;
-            padding: 32px 16px;
-            margin: auto;
-            position: relative;
-            box-sizing: border-box;
-        }
-        
-        .idcheck {
-            position: absolute;
-            height: 50%;
-            width: 100%;
-            padding: 108px 36px;
-            bottom: 0;
-            left: 0;
-            border-top-left-radius: 36px;
-            border-top-right-radius: 36px;
-            overflow: hidden;
-            font-size: 24px;
-            
-        }
-        
-        .vgrid {
-            display: grid;
-            align-items: center;
-            height: 100%;
-            grid-template-rows: 1fr 1fr;
-        }
-        
-        .bg-primary {
-            color: white;
-            background-color: var(--primary-color) !important;
-        }
-        
-        #caisson button{
-            margin: 0 auto;
-        }
-        
-        h1 {
-            font-family: "Calistoga";
-            font-weight: normal;
-        }
-        
-        #caisson button {
-            display: block;
-            width: 100%;
-        }
-
-        .centered {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            margin-top: -12px;
-            margin-left: -12px;
-        }
-    </style>
 </head>
 <body class="text-center">
     
