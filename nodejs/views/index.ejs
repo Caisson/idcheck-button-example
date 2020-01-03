@@ -123,19 +123,15 @@
             },
 
             saveExchangeToken: async function(token) {
-                const response = await fetch('/demo/savetoken', {
+                const response = await fetch('/exchangetoken', {
                     method: "POST",
-                    headers: {
-                    },
-                    body: JSON.stringify({customer_id: CUSTOMER_ID, token: token})
+                    body: JSON.stringify({user_id: USER_ID, caisson_exchange_token: token})
                 })
             },
 
             fetchName: async function() {
-                const response = await fetch(`/demo/id_data?customer_id=${CUSTOMER_ID}`, {
-                    method: "GET",
-                    headers: {
-                    },
+                const response = await fetch(`/idcheckresult?user_id=${USER_ID}`, {
+                    method: "GET"
                 })
                 const respjson = await response.json();
                 this.firstName = respjson.first_name;
