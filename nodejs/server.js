@@ -4,8 +4,14 @@ const app = express();
 const port = 8080;
 const CAISSON_SECRET_API_KEY =
   "prod_sec_OnbVibKk0gnbC-Z4bYLylYgtWBFV5FuwFtgh-utirdk";
+const CAISSON_PUBLIC_API_KEY = 
+  "prod_pub_dWNy-8G8EI9EoHGcpUbp4UEKGfH1Y35YkvPqa_3ocXw";
 const CAISSON_API_SERVER = "https://api-noam.caisson.dev";
 const CAISSON_AUTH_HEADER = `Caisson ${CAISSON_SECRET_API_KEY}`;
+const USER_ID = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);return v.toString(16);})
+
+
+app.set('view engine', 'ejs');
 
 let users = new Map();
 
@@ -220,7 +226,13 @@ const getIDCheckResult = async (req, res) => {
 
 const startServer = async () => {
   app.post("/exchangetoken", express.json(), exchangeToken);
-  app.get("/idcheckresult", express.json(), getIDCheckResult);
+  app.get("/idcheckresult", getIDCheckResult);
+  app.get("/", function(req, res) {
+    res.render('index',{
+      CAISSON_PUBLIC_API_KEY: CAISSON_PUBLIC_API_KEY,
+      USER_ID: USER_ID
+    });
+  });
 
   app.listen(port, () => console.log(`Listening on port ${port}`));
 };
