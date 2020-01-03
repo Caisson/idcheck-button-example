@@ -2,10 +2,8 @@ const express = require("express");
 const https = require("https");
 const app = express();
 const port = 8080;
-const CAISSON_SECRET_API_KEY =
-  "prod_sec_OnbVibKk0gnbC-Z4bYLylYgtWBFV5FuwFtgh-utirdk";
+
 const CAISSON_API_SERVER = "https://api-noam.caisson.dev";
-const CAISSON_AUTH_HEADER = `Caisson ${CAISSON_SECRET_API_KEY}`;
 
 let users = new Map();
 
@@ -45,7 +43,7 @@ const exchangeToken = async (req, res) => {
     {
       method: "POST",
       headers: {
-        Authorization: CAISSON_AUTH_HEADER
+        Authorization: `Caisson ${process.env.CAISSON_SECRET_API_KEY}`
       }
     },
     caissonXchgRes => {
@@ -144,7 +142,7 @@ const getIDCheckResult = async (req, res) => {
     {
       method: "GET",
       headers: {
-        Authorization: CAISSON_AUTH_HEADER,
+        Authorization: `Caisson ${process.env.CAISSON_SECRET_API_KEY}`,
         "X-Caisson-CheckID": user.caissonCheckID
       }
     },
@@ -172,10 +170,11 @@ const getIDCheckResult = async (req, res) => {
 
           if (checkResult.error == "NOT_VERIFIED") {
             // The user hasn't verified their ID yet.
-            console.error(`User '${user_id}' has not yet verified their ID"`);
+            console.error(`User '${user_id}' has not yet verified their ID`);
             res
               .status(500)
-              .send(`User '${user_id}' has not yet verified their ID"`);
+              .send(`User '${user_id}' has not yet verified their ID`);
+            return;
           } else if (checkResult.error) {
             // Some other error occurred.
             console.error(
@@ -219,6 +218,11 @@ const getIDCheckResult = async (req, res) => {
 };
 
 const startServer = async () => {
+  if (!process.env.CAISSON_SECRET_API_KEY) {
+    console.error("Missing CAISSON_SECRET_API_KEY environment variable");
+    return;
+  }
+
   app.post("/exchangetoken", express.json(), exchangeToken);
   app.get("/idcheckresult", getIDCheckResult);
 
