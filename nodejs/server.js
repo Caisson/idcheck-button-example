@@ -3,10 +3,10 @@ const express = require("express");
 const request = require("request-promise-native");
 const app = express();
 const port = 8080;
+const CAISSON_API_SERVER = "https://api.caisson.com";
 
 app.use(express.static('public'))
 app.set('view engine', 'ejs');
-const CAISSON_API_SERVER = "https://api-noam.caisson.dev";
 
 // Our fake database - a simple map of user_id -> user object
 let users = new Map();
