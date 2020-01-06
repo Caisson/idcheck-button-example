@@ -97,7 +97,7 @@
                     this.showChecking()
                     this.idCheck = idCheck;
                     console.log(idCheck);
-                    this.saveExchangeToken(idCheck.check_exchange_token);
+                    this.exchangeToken(idCheck.check_exchange_token);
                 });
                 
                 button.on('error', (error) => {
@@ -122,7 +122,7 @@
                 this.current = 'complete';
             },
 
-            saveExchangeToken: async function(token) {
+            exchangeToken: async function(token) {
                 const response = await fetch('/exchangetoken', {
                     method: "POST",
                     headers: {
