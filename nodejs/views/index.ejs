@@ -26,6 +26,7 @@
                 </div>
                 
                 <transition-group appear enter-active-class="animated fadeInUp faster" leave-active-class="animated fadeOutDown faster">
+                    
                     <div key="1" v-show="current == ''" class="idcheck">
                         <div class="vgrid">
                             <div>
@@ -105,10 +106,8 @@
                 });
                 
                 button.on('idCheckComplete', async () => {
-                    this.showComplete();
                     await this.fetchName();
-
-                    // phone home
+                    this.showComplete();
                 })
                 
                 button.mount("#caisson");
