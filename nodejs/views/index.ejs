@@ -44,7 +44,7 @@
                             </div>
                             <div>
                                 <!-- <button class="btn btn-large btn-block btn-dark" @click="showComplete">Check my ID</button> -->
-                                <div key="idcheck"  id="caisson"></div>
+                                <div key="idcheck" id="caisson"></div>
                                 
                             </div>
                         </div>
@@ -125,6 +125,9 @@
             saveExchangeToken: async function(token) {
                 const response = await fetch('/exchangetoken', {
                     method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
                     body: JSON.stringify({user_id: USER_ID, caisson_exchange_token: token})
                 })
             },
@@ -134,8 +137,8 @@
                     method: "GET"
                 })
                 const respjson = await response.json();
-                this.firstName = respjson.first_name;
-                this.lastName = respjson.last_name;
+                this.firstName = respjson.id_check_data.first_name;
+                this.lastName = respjson.id_check_data.last_name;
             }
             
         }
