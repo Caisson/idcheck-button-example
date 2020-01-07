@@ -1,0 +1,153 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, shrink-to-fit=yes, user-scalable=no" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Calistoga&display=swap" >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://api.caisson.com/v1/caisson.js"></script>
+
+</head>
+<body class="text-center">
+    
+    <div id="app">
+        
+            <div>
+                <div class="vgrid">
+                    <div>
+                        <h1>Abstract.</h1>
+                        <p>Imagine what is possible.</p>
+                    </div>
+                    <div>
+                        <!--  -->
+                    </div>
+                </div>
+                
+                <transition-group appear enter-active-class="animated fadeInUp faster" leave-active-class="animated fadeOutDown faster">
+                    
+                    <div key="1" v-show="current == ''" class="idcheck">
+                        <div class="vgrid">
+                            <div>
+                                <!--  -->
+                            </div>
+                            <div>
+                                <button class="btn btn-block btn-lg btn-primary" @click="start">Get Started</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div key="2" v-show="current == 'started'" class="idcheck bg-primary">
+                        <div class="vgrid">
+                            <div>
+                                <p>Before you create an account, <br>
+                                   we need to check your ID</p>
+                            </div>
+                            <div>
+                                <!-- <button class="btn btn-large btn-block btn-dark" @click="showComplete">Check my ID</button> -->
+                                <div key="idcheck" id="caisson"></div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div key="3" v-show="current == 'checking'">
+                        <div class="spinner-border text-primary centered" role="status">
+                                <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div key="4" v-show="current == 'complete'" class="idcheck bg-primary">
+                        <div class="vgrid">
+                            <div>
+                                <p>Welcome, <br>
+                                    {{firstName}} {{lastName}}</p>
+                                    <p>Let's set up your account.</p>
+                            </div>
+                            <div>
+                                <button class="btn btn-lg btn-block btn-light" >Continue</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </transition-group>
+            </div>
+
+    </div>
+
+<script>
+    const APIKEY = "<%= CAISSON_PUBLIC_API_KEY %>";
+    const USER_ID = "<%= USER_ID %>";
+
+    new Vue({
+        el: '#app',
+        data: {
+            current: '',
+            firstName: '',
+            lastName: '',
+            idCheck: {
+                requestID: ""
+            },
+        },
+        methods: {
+            start: function() {
+                this.current = 'started';
+                var caisson = Caisson(APIKEY);
+
+                var button = caisson.button({customer_id:USER_ID, appearance: "light"});
+                
+                button.on('idCheckCreated', async (idCheck) => {  
+                    this.showChecking()
+                    this.idCheck = idCheck;
+                    console.log(idCheck);
+                    this.exchangeToken(idCheck.check_exchange_token);
+                });
+                
+                button.on('error', (error) => {
+                    console.log(error);
+                });
+                
+                button.on('idCheckComplete', async () => {
+                    await this.fetchName();
+                    this.showComplete();
+                })
+                
+                button.mount("#caisson");
+            },
+            
+            showChecking: function() {
+                this.current = 'checking';
+            },
+            
+            showComplete: function() {
+                this.current = 'complete';
+            },
+
+            exchangeToken: async function(token) {
+                const response = await fetch('/exchangetoken', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({user_id: USER_ID, caisson_exchange_token: token})
+                })
+            },
+
+            fetchName: async function() {
+                const response = await fetch(`/idcheckresult`, {
+                    method: "GET",
+                    headers: {
+                        "X-Example-UserID": USER_ID // Sensitive data is better passed in headers to avoid information leaking through logs etc.
+                    }
+                })
+                const respjson = await response.json();
+                this.firstName = respjson.id_check_data.first_name;
+                this.lastName = respjson.id_check_data.last_name;
+            }
+            
+        }
+        
+    })
+    
+</script>
+            
+</body>
+</html>

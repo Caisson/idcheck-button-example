@@ -3,8 +3,7 @@ const express = require("express");
 const request = require("request-promise-native");
 const app = express();
 const port = 8080;
-
-const CAISSON_API_SERVER = "https://api-noam.caisson.dev";
+const CAISSON_API_SERVER = "https://api.caisson.com";
 
 // Our fake database - a simple map of user_id -> user object
 let users = new Map();
@@ -25,6 +24,15 @@ const setUser = user => {
   }
 
   users.set(user.id, user);
+};
+
+// Generate a user ID
+const getUserID = () => {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 };
 
 // Handle Caisson check exchange token. Check exchange tokens must be exchanged for
@@ -71,8 +79,7 @@ const exchangeToken = async (req, res) => {
     user.caissonCheckID = caissonXchgRes.check_id;
     setUser(user);
 
-    // Echo back the user ID for which we just exchanged the token.
-    res.end(JSON.stringify({ user_id }));
+    res.status(200).end();
   } catch (err) {
     if (err.statusCode) {
       // There was an HTTP error. In our example, we'll relay the HTTP error to the user registration web page
@@ -91,12 +98,15 @@ const exchangeToken = async (req, res) => {
 
 // Get an ID Check result
 const getIDCheckResult = async (req, res) => {
-  if (!req.query || !req.query.user_id) {
+  if (
+    !req.query ||
+    !req.get("X-Example-UserID") // Sensitive data is better not passed as a query param so we pass the user ID as a header
+  ) {
     res.status(400).send("invalid input");
     return;
   }
 
-  const user_id = req.query.user_id;
+  const user_id = req.get("X-Example-UserID");
   const user = getUser(user_id);
 
   // If we previously fetched the ID Check data from Caisson, there's no need to fetch it again.
@@ -188,8 +198,23 @@ const startServer = async () => {
     return;
   }
 
+  if (!process.env.CAISSON_PUBLIC_API_KEY) {
+    console.error("Missing CAISSON_PUBLIC_API_KEY environment variable");
+    return;
+  }
+
+  app.use(express.static("public"));
+  app.set("view engine", "ejs");
+
+  // Routes
   app.post("/exchangetoken", express.json(), exchangeToken);
   app.get("/idcheckresult", getIDCheckResult);
+  app.get("/", function(req, res) {
+    res.render("index", {
+      CAISSON_PUBLIC_API_KEY: process.env.CAISSON_PUBLIC_API_KEY,
+      USER_ID: getUserID()
+    });
+  });
 
   app.listen(port, () => console.log(`Listening on port ${port}`));
 };
