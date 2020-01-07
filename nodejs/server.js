@@ -79,7 +79,7 @@ const exchangeToken = async (req, res) => {
     if (err.statusCode) {
       // There was an HTTP error. In our example, we'll relay the HTTP error to the user registration web page
       console.error("Error: " + err.message);
-      res.send("HTTP error during token exchange", err.statusCode);
+      res.status(err.statusCode).send("HTTP error during token exchange");
       return;
     }
 
@@ -172,7 +172,9 @@ const getIDCheckResult = async (req, res) => {
     if (err.statusCode) {
       // There was an HTTP error. In our example, we'll relay the HTTP error to the user registration web page
       console.error("Error: " + err.message);
-      res.send("HTTP error during fetching ID Check result", err.statusCode);
+      res
+        .status(err.statusCode)
+        .send("HTTP error during fetching ID Check result");
       return;
     }
 
