@@ -20,14 +20,12 @@
                         <h1>Abstract.</h1>
                         <p>Imagine what is possible.</p>
                     </div>
-                    <div>
-                        <!--  -->
-                    </div>
+
                 </div>
                 
                 <transition-group appear enter-active-class="animated fadeInUp faster" leave-active-class="animated fadeOutDown faster">
                     
-                    <div key="1" v-show="current == ''" class="idcheck">
+                    <div key="1" v-show="currentStep == ''" class="section">
                         <div class="vgrid">
                             <div>
                                 <!--  -->
@@ -37,25 +35,25 @@
                             </div>
                         </div>
                     </div>
-                    <div key="2" v-show="current == 'started'" class="idcheck bg-primary">
+
+                    <div key="2" v-show="currentStep == 'started'" class="section bg-primary">
                         <div class="vgrid">
                             <div>
                                 <p>Before you create an account, <br>
                                    we need to check your ID</p>
                             </div>
                             <div>
-                                <!-- <button class="btn btn-large btn-block btn-dark" @click="showComplete">Check my ID</button> -->
                                 <div key="idcheck" id="caisson"></div>
-                                
                             </div>
                         </div>
                     </div>
-                    <div key="3" v-show="current == 'checking'">
+
+                    <div key="3" v-show="currentStep == 'checking'">
                         <div class="spinner-border text-primary centered" role="status">
                                 <span class="sr-only">Loading...</span>
                         </div>
                     </div>
-                    <div key="4" v-show="current == 'complete'" class="idcheck bg-primary">
+                    <div key="4" v-show="currentStep == 'complete'" class="section bg-primary">
                         <div class="vgrid">
                             <div>
                                 <p>Welcome, <br>
@@ -63,7 +61,17 @@
                                     <p>Let's set up your account.</p>
                             </div>
                             <div>
-                                <button class="btn btn-lg btn-block btn-light" >Continue</button>
+                                <button class="btn btn-lg btn-block btn-light" @click="finish" >Continue</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div key="5" v-show="currentStep == 'finished'" class="section">
+                        <div class="vgrid">
+                            <div>
+                                <p>This concludes the <br> Caisson ID Check demo.</p>
+                                <p>If you have any questions, <br> please get in touch.</p>
+                                <a href="mailto:hello@caisson.com">hello@caisson.com</a>
                             </div>
                         </div>
                     </div>
@@ -80,7 +88,7 @@
     new Vue({
         el: '#app',
         data: {
-            current: '',
+            currentStep: '',
             firstName: '',
             lastName: '',
             idCheck: {
@@ -89,13 +97,12 @@
         },
         methods: {
             start: function() {
-                this.current = 'started';
-                var caisson = Caisson(APIKEY);
+                this.currentStep = 'started';
 
+                var caisson = Caisson(APIKEY);
                 var button = caisson.button({customer_id:USER_ID, appearance: "light"});
                 
                 button.on('idCheckCreated', async (idCheck) => {  
-                    this.showChecking()
                     this.idCheck = idCheck;
                     console.log(idCheck);
                     this.exchangeToken(idCheck.check_exchange_token);
@@ -106,21 +113,14 @@
                 });
                 
                 button.on('idCheckComplete', async () => {
+                    this.currentStep = 'checking';
                     await this.fetchName();
-                    this.showComplete();
+                    this.currentStep = 'complete';
                 })
                 
                 button.mount("#caisson");
             },
             
-            showChecking: function() {
-                this.current = 'checking';
-            },
-            
-            showComplete: function() {
-                this.current = 'complete';
-            },
-
             exchangeToken: async function(token) {
                 const response = await fetch('/exchangetoken', {
                     method: "POST",
@@ -138,6 +138,10 @@
                 const respjson = await response.json();
                 this.firstName = respjson.id_check_data.first_name;
                 this.lastName = respjson.id_check_data.last_name;
+            },
+
+            finish: function() {
+                this.currentStep = 'finished';
             }
             
         }
