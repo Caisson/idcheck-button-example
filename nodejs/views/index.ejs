@@ -132,8 +132,11 @@
             },
 
             fetchName: async function() {
-                const response = await fetch(`/idcheckresult?user_id=${USER_ID}`, {
-                    method: "GET"
+                const response = await fetch(`/idcheckresult`, {
+                    method: "GET",
+                    headers: {
+                        "X-Example-UserID": USER_ID // Sensitive data is better passed in headers to avoid information leaking through logs etc.
+                    }
                 })
                 const respjson = await response.json();
                 this.firstName = respjson.id_check_data.first_name;
