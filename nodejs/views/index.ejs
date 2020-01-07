@@ -53,15 +53,18 @@
                                 <span class="sr-only">Loading...</span>
                         </div>
                     </div>
+                    
                     <div key="4" v-show="currentStep == 'complete'" class="section bg-primary">
                         <div class="vgrid">
                             <div>
-                                <p>Welcome, <br>
-                                    {{firstName}} {{lastName}}</p>
-                                    <p>Let's set up your account.</p>
+                                <p>
+                                    Welcome, <br>
+                                    {{firstName}} {{lastName}}
+                                </p>
+                                <p>Let’s set up your account.</p>
                             </div>
                             <div>
-                                <button class="btn btn-lg btn-block btn-light" @click="finish" >Continue</button>
+                                <button class="btn btn-lg btn-block btn-light" @click="finish">Continue</button>
                             </div>
                         </div>
                     </div>
