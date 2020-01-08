@@ -1,0 +1,68 @@
+:root {
+  --primary-color: #007bff;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+  max-width: 500px;
+  padding: 32px 16px;
+  margin: auto;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.section {
+  position: absolute;
+  height: 60%;
+  width: 100%;
+  padding: 108px 36px;
+  bottom: 0;
+  left: 0;
+  border-top-left-radius: 36px;
+  border-top-right-radius: 36px;
+  overflow: hidden;
+  font-size: 24px;
+}
+
+.vgrid {
+  display: grid;
+  align-items: center;
+  height: 100%;
+  grid-template-rows: 1fr 1fr;
+}
+
+.bg-primary {
+  color: white;
+  background-color: var(--primary-color) !important;
+}
+
+#caisson button {
+  margin: 0 auto;
+}
+
+h1 {
+  font-family: "Calistoga";
+  font-weight: normal;
+}
+
+#caisson button {
+  display: block;
+  width: 100%;
+}
+
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -12px;
+  margin-left: -12px;
+}
