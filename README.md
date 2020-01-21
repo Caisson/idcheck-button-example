@@ -29,5 +29,5 @@ Your app should now be running on [localhost:8080](http://localhost:8080/).
 More information about using the Caisson JS Button is available in the Caisson Docs.
 
 - [Getting Started with the Caisson JS Button](https://www.caisson.com/docs/integration/jsbutton/)
-- [Caisson Reference JS Buttom](https://www.caisson.com/docs/reference/jsbutton/)
+- [Caisson Reference JS Button](https://www.caisson.com/docs/reference/jsbutton/)
 - [Caisson Reference REST API](https://www.caisson.com/docs/reference/api/)
