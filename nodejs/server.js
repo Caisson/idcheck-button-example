@@ -150,14 +150,33 @@ const getIDCheckResult = async (req, res) => {
     if (caissonResultRes.error == "NOT_VERIFIED") {
       // The user hasn't verified their ID yet.
       console.error(`User '${user_id}' has not yet verified their ID`);
-      res.status(500).send(`User '${user_id}' has not yet verified their ID`);
+      res.status(500).send(
+        JSON.stringify({
+          error: "NOT_VERIFIED",
+          error_message: `User has not yet verified their ID`
+        })
+      );
+      return;
+    } else if (caissonResultRes.error == "PENDING_REVIEW") {
+      console.error(`ID Check for user '${user_id}' is pending further review`);
+      res.status(500).send(
+        JSON.stringify({
+          error: "PENDING_REVIEW",
+          error_message: `ID Check is pending furhter review`
+        })
+      );
       return;
     } else if (caissonResultRes.error) {
       // Some other error occurred.
       console.error(
         `Error '${caissonResultRes.error}' fetching Caisson ID Check result: "${caissonResultRes.error_message}"`
       );
-      res.status(500).send("Error fetching ID Check result");
+      res.status(500).send(
+        JSON.stringify({
+          error: "UNEXPECTED_ERROR",
+          error_message: "Error fetching ID Check result"
+        })
+      );
       return;
     }
 

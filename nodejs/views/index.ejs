@@ -79,12 +79,15 @@
             class="section bg-primary"
           >
             <div class="vgrid">
-              <div>
+              <div v-if="!error">
                 <p>
                   Welcome, <br />
                   {{ firstName }} {{ lastName }}
                 </p>
                 <p>Let’s set up your account.</p>
+              </div>
+              <div v-else>
+                {{ error }}
               </div>
               <div>
                 <button class="btn btn-lg btn-block btn-light" @click="finish">
@@ -123,6 +126,7 @@
           currentStep: "",
           firstName: "",
           lastName: "",
+          error: "",
           idCheck: {}
         },
         methods: {
@@ -174,9 +178,26 @@
                 "X-Example-UserID": USER_ID // Sensitive data is better passed in headers to avoid information leaking through logs etc.
               }
             });
-            const respjson = await response.json();
-            this.firstName = respjson.id_check_data.first_name;
-            this.lastName = respjson.id_check_data.last_name;
+            try {
+              const respjson = await response.json();
+              if (respjson.error) {
+                if (respjson.error === "PENDING_REVIEW") {
+                  // This ID Check is pending further review. We won't wait for the result and instead proceed without 
+                  // displaying the person's name.
+                  return;
+                } else {
+                  // All other errors...
+                  console.log(respjson.error_message)
+                  this.error = "Something went wrong. Please try again later."
+                  return;
+                }
+              }
+              this.firstName = respjson.id_check_data.first_name;
+              this.lastName = respjson.id_check_data.last_name;
+            }
+            catch(err) {
+              console.log("Failed to fetch ID Check result", err)
+            }
           },
 
           finish: function() {
