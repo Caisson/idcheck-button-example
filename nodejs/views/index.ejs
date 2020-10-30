@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="/css/styles.css" />
 
     <script src="https://unpkg.com/vue"></script>
-    <script src="https://api.caisson.com/v1/caisson_iframe.js"></script>
+    <script src="https://api.caisson.com/v2/caisson.js"></script>
   </head>
   <body class="text-center">
     <div id="app">
@@ -70,6 +70,12 @@
           <div key="3" v-show="currentStep == 'checking'">
             <div class="spinner-border text-primary centered" role="status">
               <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+
+          <div key="6" v-show="currentStep == 'processing'">
+            <div class="spinner-border text-primary centered" role="status">
+              <span class="sr-only">Processing...</span>
             </div>
           </div>
 
@@ -147,6 +153,10 @@
 
             button.on("error", error => {
               console.log(error);
+            });
+
+            button.on("idCheckProcessing", async() => {
+              this.currentStep = "processing";
             });
 
             button.on("idCheckComplete", async () => {
